@@ -28,6 +28,21 @@ public final class HTTPClient {
     public struct Request {
         var head: HTTPRequestHead
         var body: Data
+        var urlRequest: URLRequest? {
+            guard let url = URL(string: head.uri) else { return nil }
+            let urlRequest = NSMutableURLRequest(url: url)
+
+            var dictionary = [String: String]()
+            for (key, value) in head.headers {
+                dictionary[key] = value
+            }
+
+            urlRequest.allHTTPHeaderFields = dictionary
+            urlRequest.httpMethod = head.method.rawValue
+            urlRequest.httpBody = body
+
+            return urlRequest as URLRequest
+        }
     }
 
     /// Response structure received back
