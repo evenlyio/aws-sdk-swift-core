@@ -277,6 +277,20 @@ extension AWSClient {
 // request creator
 extension AWSClient {
 
+    /*
+        This method creates a put request for a given PutObjectRequest. Atm be carefull everything will perform
+     */
+    public func createPutURLRequest<Input: AWSShape>(input: Input) -> URLRequest?  {
+        guard let awsRequest = try? createAWSRequest(
+            operation: "PutObject",
+            path: "/{Bucket}/{Key+}",
+            httpMethod: "PUT",
+            input: input
+        ) else { return nil }
+
+        return try? createNioRequest(awsRequest).urlRequest
+    }
+
     fileprivate func createNIORequestWithSignedURL(_ awsRequest: AWSRequest) throws -> HTTPClient.Request {
         var nioRequest = try awsRequest.toNIORequest()
 
