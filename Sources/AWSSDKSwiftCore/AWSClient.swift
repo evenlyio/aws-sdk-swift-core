@@ -280,15 +280,15 @@ extension AWSClient {
     /*
         This method creates a put request for a given PutObjectRequest. Atm be carefull everything will perform
      */
-    public func createPutURLRequest<Input: AWSShape>(input: Input) -> URLRequest?  {
-        guard let awsRequest = try? createAWSRequest(
-            operation: "PutObject",
-            path: "/{Bucket}/{Key+}",
-            httpMethod: "PUT",
-            input: input
-        ) else { return nil }
+    public func createPutURLRequest<Input: AWSShape>(input: Input, fileName: String) -> URLRequest?  {
+       guard let awsRequest = try? createAWSRequest(
+           operation: "PutObject",
+           path: "/{Bucket}/\(fileName)",
+           httpMethod: "PUT",
+           input: input
+       ) else { return nil }
 
-        return try? createNioRequest(awsRequest).urlRequest
+       return try? createNioRequest(awsRequest).urlRequest
     }
 
     fileprivate func createNIORequestWithSignedURL(_ awsRequest: AWSRequest) throws -> HTTPClient.Request {
@@ -351,7 +351,7 @@ extension AWSClient {
                 return try createNIORequestWithSignedHeader(awsRequest)
             }
             return try createNIORequestWithSignedURL(awsRequest)
-            
+
         default:
             return try createNIORequestWithSignedHeader(awsRequest)
         }
